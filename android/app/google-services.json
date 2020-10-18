@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "859410368729",
+    "firebase_url": "https://jaki-8237b.firebaseio.com",
+    "project_id": "jaki-8237b",
+    "storage_bucket": "jaki-8237b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:859410368729:android:18601ff16f41b34d5656c8",
+        "android_client_info": {
+          "package_name": "com.jaki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "859410368729-28kh0u1q8c71e2mr436ro660b6q79paj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jaki",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "859410368729-dg3i9baknbcj7s9mcntu9ia0i71juga1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9_M31H9F6_rLlBUvwSpTH6p5xizXWwXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "859410368729-dg3i9baknbcj7s9mcntu9ia0i71juga1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
