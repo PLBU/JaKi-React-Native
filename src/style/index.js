@@ -5,6 +5,7 @@ import { RFValue } from "react-native-responsive-fontsize"
 import theme from './theme.js'
 
 export default StyleSheet.create({
+    //Views
     whiteView: {
         flex: 1,
         backgroundColor: 'white'
@@ -15,6 +16,7 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: 'white'
     },
+    //Buttons
     smallIconButton: {
         width: RFValue(45), 
         height: RFValue(45),
@@ -44,6 +46,7 @@ export default StyleSheet.create({
         width:theme.DEVICE_WIDTH*0.7,
         opacity: 0.3
     },
+    //Texts
     buttonText: {
         fontSize: RFValue(15)
     },
@@ -53,12 +56,14 @@ export default StyleSheet.create({
     mediumText: {
         fontSize: RFValue(17)
     },
+    //Sizes
     iconSize: {
         width: RFValue(20), height: RFValue(20)
     },
     avatar: {
         width: RFValue(100), height: RFValue(100), borderRadius: RFValue(50)
     },
+    //Cards
     bigCard: {
         backgroundColor: 'white', 
         elevation: 5, 

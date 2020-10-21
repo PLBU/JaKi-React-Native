@@ -7,4 +7,4 @@
 10. Auto routing/ Navigation
 
 # TODO TODAY
-2. Integrate Google Places API in search
+3. Inserting blackspot/troublespot/COVID-19

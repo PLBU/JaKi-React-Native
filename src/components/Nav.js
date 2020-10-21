@@ -22,7 +22,7 @@ export const BottomTabComponent = () => {
             lazy={false}
             tabBarOptions={{
                 activeTintColor: theme.PRIMARY_DARK_COLOR,
-                labelStyle: {fontSize: RFValue(11)},
+                labelStyle: {fontSize: RFValue(12)},
             }}
             resetOnBlur={false} >
             <BottomTab.Screen 
