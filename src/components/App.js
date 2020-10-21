@@ -4,6 +4,7 @@ import {
   Text,
   ImageBackground,
   ActivityIndicator,
+  PermissionsAndroid
 } from 'react-native'
 import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
@@ -12,6 +13,8 @@ import auth from '@react-native-firebase/auth'
 import { GoogleSignin } from '@react-native-community/google-signin'
 import { RFValue } from "react-native-responsive-fontsize"
 import AsyncStorage from '@react-native-community/async-storage'
+import Geolocation from '@react-native-community/geolocation'
+import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 
 //importing components
 import { BottomTabComponent } from './Nav.js'
@@ -21,7 +24,7 @@ import AuthComponent from '../screens/auth.js'
 import styles from '../style'
 
 //importing context
-import { AuthContext } from './Context.js'
+import { GlobalContext } from './Context.js'
 
 //importing images
 import splashImage from '../assets/images/launch_screen.png'
@@ -34,7 +37,7 @@ GoogleSignin.configure({
 })
 
 export default () => {
-  const authReducer = (prevState, action) => {
+  const globalReducer = (prevState, action) => {
     switch( action.type ) {
       case 'LOGIN': 
         return {
@@ -64,16 +67,22 @@ export default () => {
           ...prevState,
           userInfo: action.info
         }
+      case 'ENABLE LOCATION':
+        return {
+          ...prevState,
+          locationEnabled: true
+        }
   }}
 
-  const [authState, dispatch] = React.useReducer(authReducer, 
+  const [globalState, dispatch] = React.useReducer(globalReducer, 
     {
       isLoading: true,
       userToken: null,
-      userInfo: null
+      userInfo: null,
+      locationEnabled: false
   })
 
-  const authContext = React.useMemo( () => ({
+  const globalContext = React.useMemo( () => ({
     _signIn: async () => {
       try {
         dispatch({type: 'LOADING'})
@@ -116,8 +125,8 @@ export default () => {
           console.log("ERROR IN LOGGING OUT: " + e) 
         }
     },
-    authState
-  }), [authState])
+    globalState
+  }), [globalState])
 
   const onAuthStateChanged = async (userToken) => {
     var userInfo = null
@@ -133,26 +142,67 @@ export default () => {
     }
   }
 
+  const requestLocationPermission = () => {
+    return new Promise ( async (resolve, reject) => {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: "JaKi",
+            message:
+              "Aplikasi asisten masyarakat dalam program zero accident",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK"
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log("You can use the location")
+          resolve()
+        } else {
+          console.log("ERROR IN LOCATION PERMISSION: location permission denied")
+          reject()
+        }
+      } catch (err) {
+        console.log("ERROR IN LOCATION PERMISSION:" + err)
+        reject()
+      }
+    }) 
+  }
+
+  const enableLocation = () => {
+    RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({interval: 10000, fastInterval: 5000})
+      .then(data => {
+        console.log("LOCATION ENABLED: " + data)
+        dispatch({type: 'ENABLE LOCATION'})
+      }).catch(err => {
+        console.log("LOCATION ENABLED ERROR: " + err.message)
+      })
+  }
+
+
   React.useEffect( () => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
 
+    requestLocationPermission()
+      .then( () => enableLocation() )
     SplashScreen.hide()
     
     return subscriber
   }, [])
 
-  if (authState?.isLoading) return(
+  if (globalState?.isLoading) return(
     <ImageBackground source={splashImage} style={{width: '100%', height: '100%', alignItems: 'center'}}>
       <ActivityIndicator size="large" color="white" style={{position: 'absolute', bottom: theme.DEVICE_HEIGHT*0.15}}/>
     </ImageBackground>
   )
   else return(
-    <AuthContext.Provider value={authContext}>
-    {(!authState?.userToken)
+    <GlobalContext.Provider value={globalContext}>
+    {(!globalState?.userToken)
       ? <AuthComponent/>
       : <NavigationContainer>
           <BottomTabComponent/>
         </NavigationContainer>}
-    </AuthContext.Provider>
+    </GlobalContext.Provider>
   )
 }

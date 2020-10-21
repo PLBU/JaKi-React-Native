@@ -5,11 +5,23 @@ import { RFValue } from "react-native-responsive-fontsize"
 import theme from './theme.js'
 
 export default StyleSheet.create({
+    whiteView: {
+        flex: 1,
+        backgroundColor: 'white'
+    },
     centeredView: {
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
         backgroundColor: 'white'
+    },
+    smallIconButton: {
+        width: RFValue(45), 
+        height: RFValue(45),
+        borderRadius: RFValue(50), 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        elevation: 5
     },
     button: {
         flexDirection: 'row',
@@ -28,7 +40,7 @@ export default StyleSheet.create({
         backgroundColor: theme.ACCENT_COLOR,
         padding: RFValue(15),
         borderRadius: RFValue(20),
-        elevation: 5,
+        elevation: 0,
         width:theme.DEVICE_WIDTH*0.7,
         opacity: 0.3
     },

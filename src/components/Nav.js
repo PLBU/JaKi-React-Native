@@ -2,6 +2,7 @@ import * as React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IonIcon from 'react-native-vector-icons/Ionicons';
+import { RFValue } from "react-native-responsive-fontsize"
 
 //importing screens
 import BerandaScreen from '../screens/beranda.js'
@@ -21,7 +22,7 @@ export const BottomTabComponent = () => {
             lazy={false}
             tabBarOptions={{
                 activeTintColor: theme.PRIMARY_DARK_COLOR,
-                labelStyle: {fontSize: 11},
+                labelStyle: {fontSize: RFValue(11)},
             }}
             resetOnBlur={false} >
             <BottomTab.Screen 

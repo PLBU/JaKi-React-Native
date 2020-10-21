@@ -12,7 +12,7 @@ import { RFValue } from "react-native-responsive-fontsize"
 import styles from '../style'
 
 //importing context
-import { AuthContext } from '../components/Context.js'
+import { GlobalContext } from '../components/Context.js'
 
 //importing images
 import splashImage from '../assets/images/launch_screen.png'
@@ -22,7 +22,7 @@ import googleIcon from '../assets/images/googleLogo.png'
 import theme from '../style/theme.js'
 
 export default () => {
-    const { _signIn } = React.useContext(AuthContext)
+    const { _signIn } = React.useContext(GlobalContext)
 
     return(
         <ImageBackground source={splashImage} style={{width: '100%', height: '100%', alignItems: 'center'}}>

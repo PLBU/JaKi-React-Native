@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-community/geolocation": "^2.0.2",
     "@react-native-community/google-signin": "^5.0.0",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/app": "^8.4.6",
@@ -19,7 +20,10 @@
     "@react-navigation/native": "^5.7.6",
     "react": "16.13.1",
     "react-native": "0.63.3",
+    "react-native-android-location-enabler": "^1.2.1",
     "react-native-gesture-handler": "^1.8.0",
+    "react-native-google-places-autocomplete": "^2.0.3",
+    "react-native-maps": "0.27.1",
     "react-native-reanimated": "^1.13.1",
     "react-native-responsive-fontsize": "^0.4.3",
     "react-native-safe-area-context": "^3.1.8",
