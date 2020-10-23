@@ -3,15 +3,17 @@ import {
     View,
     Text,
     ActivityIndicator,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native'
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { PROVIDER_GOOGLE, Circle } from 'react-native-maps'
 import Geolocation from '@react-native-community/geolocation'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RFValue } from "react-native-responsive-fontsize"
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import { Marker } from 'react-native-maps'
+import firebase from '../firebase'
 
 // Importing styles
 import styles from '../style'
@@ -21,6 +23,9 @@ import { GlobalContext } from '../components/Context.js'
 
 //importing theme
 import theme from '../style/theme.js'
+
+//importing data
+import { blackSpots } from '../data'
 
 export default () => {
     const searchBar = React.useRef()
@@ -34,8 +39,59 @@ export default () => {
         latitudeDelta: 0.01,
         longitudeDelta: 0.01
     })
-
     const [marker, setMarker] = React.useState(null)
+    const [troubleSpots, setTroubleSpots] = React.useState([])
+
+    const getAllTroubleSpots = () => {
+        const getTroublespots = firebase.functions().httpsCallable('getTroublespots')
+
+        getTroublespots()
+            .then(result => {
+                console.log('GET TROUBLESPOTS BERHASIL: ')
+                console.log(result.data)
+                setTroubleSpots(result.data)
+            })
+            .catch(e => {
+                console.log('ERROR DI GET ALL TROUBLESPOTS: ' + e)
+            })
+    }
+
+    const addTroubleSpot = () => {
+        const data = {
+            author : "user",
+            lat : Number(lat),
+            lang : Number(lang),
+            keterangan
+        }
+        const addTroublespot = firebase.functions().httpsCallable("addTroublespot")
+
+        addTroublespot(data)
+            .then(() => getAllTroubleSpots())
+            .then(() => {
+                setLat("")
+                setLang("")
+                setKeterangan("")
+                console.log("Finish Fetching")
+            })
+    }
+
+    const getCurrentLocation = () => {
+        Geolocation.getCurrentPosition(
+            position => {
+                console.log("SUCCEED IN GEOLOCATION GET CURRENT POSITION: " + position.coords.longitude + " " + position.coords.latitude)
+                const { longitude, latitude } = position.coords
+                setCurrentLocation({
+                    ...currentLocation,
+                    longitude,
+                    latitude
+                })
+            },
+            err => {
+                Alert.alert("Error", "Failed getting your current location, please try again")
+                console.log("ERROR IN GEOLOCATION GET CURRENT POSITION: " + err.response)
+            },
+            {timeout: 20000, maximumAge: 1000})
+    }
 
     const _renderRightButton = () => ( (searchBar.current?.isFocused() )
         ?
@@ -48,18 +104,9 @@ export default () => {
     )
 
     React.useEffect( () => {
-        Geolocation.getCurrentPosition(
-            position => {
-                console.log("SUCCEED IN GEOLOCATION GET CURRENT POSITION: " + position)
-                const { longitude, latitude } = position.coords
-                setCurrentLocation({
-                    ...currentLocation,
-                    longitude,
-                    latitude
-                })
-            },
-            err => console.log("ERROR IN GEOLOCATION GET CURRENT POSITION: " + err.response),
-            {timeout: 20000, maximumAge: 1000})
+        getCurrentLocation()
+        getAllTroubleSpots()
+        // getAllBlackSpots() 
     }, [globalState?.locationEnabled])
 
     return (currentLocation.latitude) 
@@ -67,14 +114,37 @@ export default () => {
         <View style={styles.centeredView}>
             <MapView
                 ref = {mapView}
-                provider={PROVIDER_GOOGLE}
-                style={{width: '100%', height: '100%'}}
-                initialRegion={currentLocation}
-                region={currentLocation}
+                provider = {PROVIDER_GOOGLE}
+                style = {{width: '100%', height: '100%'}}
+                initialRegion = {currentLocation}
+                region = {currentLocation}
                 // onRegionChange={ (region) => setCurrentLocation(region)}
-                showsUserLocation
-                showsMyLocationButton={false}>
+                showsUserLocation = {true}
+                showsCompass = {false}
+                showsMyLocationButton = {false}>
                 {marker && <Marker coordinate={marker}/>}
+                {troubleSpots.map( (value, index) =>
+                    <Circle 
+                        center = {{
+                            latitude: value.lat,
+                            longitude: value.lang
+                        }}
+                        key = {index}
+                        radius = {200}
+                        strokeWidth = {0}
+                        fillColor = 'rgba(255, 255, 0, 0.3)'/>)
+                }
+                {blackSpots.map( (value, index) =>
+                    <Circle 
+                        center = {{
+                            latitude: value.lat,
+                            longitude: value.lang
+                        }}
+                        key = {index}
+                        radius = {200}
+                        strokeWidth = {0}
+                        fillColor = 'rgba(0, 0, 0, 0.3)'/>)
+                }
             </MapView>
             <View style={[styles.smallIconButton, {position: 'absolute', bottom: 15, right: 15, backgroundColor: 'white', opacity: 0.75}]}>
                 <TouchableOpacity 

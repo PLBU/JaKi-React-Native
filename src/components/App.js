@@ -15,6 +15,7 @@ import { RFValue } from "react-native-responsive-fontsize"
 import AsyncStorage from '@react-native-community/async-storage'
 import Geolocation from '@react-native-community/geolocation'
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
+// import firebase from '../firebase'
 
 //importing components
 import { BottomTabComponent } from './Nav.js'
@@ -89,7 +90,7 @@ export default () => {
 
         // Get the users ID token
         const userInfo = await GoogleSignin.signIn()
-        const { idToken } = await GoogleSignin.signIn()
+        const idToken = userInfo.idToken
 
         // Create a Google credential with the token
         const googleCredential = auth.GoogleAuthProvider.credential(idToken)
@@ -107,6 +108,36 @@ export default () => {
         dispatch({type: 'STOP LOADING'})
         console.log("ERROR IN LOGGING IN: " + e)
       }
+      // dispatch({type: 'LOADING'})
+      // try {
+      //   const provider = new firebase.auth.GoogleAuthProvider();
+
+      //   firebase.auth().signInWithPopup(provider)
+      //     .then( (result) => {
+      //       // This gives you a Google Access Token. You can use it to access the Google API.
+      //       var token = result.credential.accessToken;
+      //       // The signed-in user info.
+      //       var user = result.user;
+      //       // ...
+      //       dispatch({type: 'STOP LOADING'})
+      //       console.log(user)
+      //     })
+      //     .catch( (error) => {
+      //       // Handle Errors here.
+      //       var errorCode = error.code;
+      //       var errorMessage = error.message;
+      //       // The email of the user's account used.
+      //       var email = error.email;
+      //       // The firebase.auth.AuthCredential type that was used.
+      //       var credential = error.credential;
+      //       // ...
+      //       console.log("ERROR IN LOGGING IN: " + errorCode)
+      //       dispatch({type: 'STOP LOADING'})
+      //     })
+      // } catch (e) {
+      //   dispatch({type: 'STOP LOADING'})
+      //   console.log("ERROR IN LOGGING IN: " + e)
+      // }
     },
     _logOut: async () => {
         dispatch({type: 'LOADING'})
@@ -180,13 +211,13 @@ export default () => {
       })
   }
 
-
   React.useEffect( () => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
 
     requestLocationPermission()
       .then( () => enableLocation() )
     SplashScreen.hide()
+    // dispatch({type: 'STOP LOADING'})
     
     return subscriber
   }, [])
